@@ -1,0 +1,68 @@
+@file:Suppress("unused")
+
+package de.maxbossing.mxpaper.extensions.geometry
+
+import org.bukkit.Chunk
+import org.bukkit.Location
+import org.bukkit.World
+import org.bukkit.util.Vector
+
+//TODO: Rename the File
+
+/**
+ * Represents a simple Location in 2D
+ */
+data class SimpleLocation2D(
+    val x: Double,
+    val y: Double,
+) {
+    constructor(x: Number, y: Number)
+            : this(x.toDouble(), y.toDouble())
+}
+
+/**
+ * Represents a simple Location in 3D
+ */
+data class SimpleLocation3D(
+    val x: Double,
+    val y: Double,
+    val z: Double,
+    val direction: Vector = vec(0, 0, 0),
+) {
+    constructor(x: Number, y: Number, z: Number)
+            : this(x.toDouble(), y.toDouble(), z.toDouble())
+
+    /**
+     * @return The Chunk Location of the Location
+     */
+    val chunk: SimpleChunkLocation
+        get() = SimpleChunkLocation(x.toInt() shr 4, z.toInt() shr 4)
+}
+
+/**
+ * Represents a Simple Location of a Chunk
+ */
+data class SimpleChunkLocation(
+    val x: Int,
+    val z: Int,
+)
+
+// CONVERTER
+fun Location.toSimple() = SimpleLocation3D(x, y, z)
+fun Chunk.toSimple() = SimpleChunkLocation(x, z)
+fun SimpleLocation3D.withWorld(world: World) = Location(world, x, y, z).apply { direction = this@withWorld.direction }
+fun SimpleChunkLocation.withWorld(world: World) = world.getChunkAt(x, z)
+fun Vector.toSimpleLoc() = SimpleLocation3D(x, y, z)
+fun SimpleLocation3D.toVector() = Vector(x, y, z)
+
+/**
+ * Returns a simple string in the format of `[x, y, z]`.
+ */
+fun Location.toSimpleString() = "[$x, $y, $z]"
+fun Location.toSimpleBlockString() = "[$blockX, $blockY, $blockZ]"
+
+/**
+ * Returns the world or null if the world is not loaded
+ */
+val Location.worldOrNull
+    get() = takeIf { isWorldLoaded }?.world

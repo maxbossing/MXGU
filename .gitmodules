@@ -1,0 +1,3 @@
+[submodule "mxpaper"]
+	path = mxpaperlight
+	url = git@github.com:maxbossing/mxpaper.git

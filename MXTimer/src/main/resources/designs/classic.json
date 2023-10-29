@@ -1,0 +1,117 @@
+{
+  "name": "Classic Design",
+  "description": "The classic Look of MXTimer!",
+  "creator": "Max Bossing",
+  "displaySlot": "HOTBAR",
+  "running" : {
+    "raw": "<gold> <d><h>:<m>:<s></gold>",
+    "prefix": "",
+    "suffix": "",
+    "animated": false,
+    "animationSpeed": 1.0,
+    "days": {
+      "prefix": "",
+      "suffix": ":",
+      "forceDoubleDigits": false,
+      "alwaysVisible": false
+    },
+    "hours": {
+      "prefix": "",
+      "suffix": "",
+      "forceDoubleDigits": true,
+      "alwaysVisible": true
+    },
+    "minutes": {
+      "prefix": "",
+      "suffix": "",
+      "forceDoubleDigits": true,
+      "alwaysVisible": true
+    },
+    "seconds": {
+      "prefix": "",
+      "suffix": "",
+      "forceDoubleDigits": true,
+      "alwaysVisible": true
+    },
+    "milliseconds": {
+      "prefix": "",
+      "suffix": "",
+      "forceDoubleDigits": false,
+      "alwaysVisible": false
+    }
+  },
+  "paused" : {
+    "raw": "<red>Timer paused</red>",
+    "prefix": "",
+    "suffix": "",
+    "animated": false,
+    "animationSpeed": 1.0,
+    "days": {
+      "prefix": "",
+      "suffix": "",
+      "forceDoubleDigits": false,
+      "alwaysVisible": false
+    },
+    "hours": {
+      "prefix": "",
+      "suffix": "",
+      "forceDoubleDigits": false,
+      "alwaysVisible": false
+    },
+    "minutes": {
+      "prefix": "",
+      "suffix": "",
+      "forceDoubleDigits": false,
+      "alwaysVisible": false
+    },
+    "seconds": {
+      "prefix": "",
+      "suffix": "",
+      "forceDoubleDigits": false,
+      "alwaysVisible": true
+    },
+    "milliseconds": {
+      "prefix": "",
+      "suffix": "",
+      "forceDoubleDigits": false,
+      "alwaysVisible": false
+    }
+  },
+  "stopped" : {
+    "raw": "<red>Timer paused</red>",
+    "prefix": "",
+    "suffix": "",
+    "animated": false,
+    "animationSpeed": 1.0,
+    "days": {
+      "prefix": "",
+      "suffix": "",
+      "forceDoubleDigits": false,
+      "alwaysVisible": false
+    },
+    "hours": {
+      "prefix": "",
+      "suffix": "",
+      "forceDoubleDigits": false,
+      "alwaysVisible": false
+    },
+    "minutes": {
+      "prefix": "",
+      "suffix": "",
+      "forceDoubleDigits": false,
+      "alwaysVisible": false
+    },
+    "seconds": {
+      "prefix": "",
+      "suffix": "",
+      "forceDoubleDigits": false,
+      "alwaysVisible": true
+    },
+    "milliseconds": {
+      "prefix": "",
+      "suffix": "",
+      "forceDoubleDigits": false,
+      "alwaysVisible": false
+    }
+  }
+}

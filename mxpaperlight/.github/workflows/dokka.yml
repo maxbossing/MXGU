@@ -1,0 +1,29 @@
+name: Docs
+on:
+  push:
+    paths:
+      - docs/**
+    branches:
+      - master
+      - main
+  workflow_dispatch:
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 17
+      - name: Build documentation
+        run: ./gradlew dokkaHtml
+      - name: Copy To Branches Action
+        uses: planetoftheweb/copy-to-branches@v1
+        env:
+          key: master
+          exclude: work 99_target
+          files: docs/**
+          branches: gh-pages

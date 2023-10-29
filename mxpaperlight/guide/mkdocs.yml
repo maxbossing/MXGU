@@ -1,0 +1,48 @@
+site_name: MXPaper
+site_description: Extended Paper API - For Kotlin
+site_author: Max Bossing
+copyright: Copyright © (2021) - Max Bossing
+
+theme:
+  name: material
+  language: en
+  icon:
+    repo: fontawesome/brands/github
+  palette:
+    scheme: preference
+    primary: deep purple
+    accent: red
+
+markdown_extensions:
+  - pymdownx.details
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - toc:
+      permalink: true
+      toc_depth: 4
+
+repo_url: https://github.com/maxbossing/MXPaper
+repo_name: maxbossing/MXPaper
+
+edit_uri: edit/master/guide/docs/
+
+nav:
+  - Home: index.md
+  - Setup:
+      - For absolute beginners:
+          - Requirements: setup/beginners/beginners.md
+          - Starting a new project: setup/beginners/project.md
+          - Configure Java version: setup/beginners/java_version.md
+      - Setup using Gradle: setup/gradle.md
+      - Build script example: setup/gradle_example.md
+      - Entrypoint to your plugin: setup/entrypoint.md
+  - Extensions:
+      - Event listener: extensions/listener.md
+      - Tasks: extensions/tasks.md
+      - Item builder: extensions/itembuilder.md
+      - Literal text: extensions/literal_text.md
+      - Recipes: extensions/recipes.md
+      - Scoreboard: extensions/scoreboard.md
+      - Translation: extensions/translation.md
+  - Gui:
+      - Compounds: gui/compounds.md

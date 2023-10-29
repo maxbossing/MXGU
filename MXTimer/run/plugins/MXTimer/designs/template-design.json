@@ -1,0 +1,117 @@
+{
+  "name": "Template Design",
+  "description": "The default look of MXTimer!",
+  "creator": "Max Bossing",
+  "displaySlot": "HOTBAR",
+  "running" : {
+    "raw": "<gradient:#324fcb:#4a0e9c><prefix> <d> <h> <m> <s> <suffix></gradient>",
+    "prefix": "",
+    "suffix": "",
+    "animated": false,
+    "animationSpeed": 1.0,
+    "days": {
+      "prefix": "",
+      "suffix": " Days",
+      "forceDoubleDigits": false,
+      "alwaysVisible": false
+    },
+    "hours": {
+      "prefix": "",
+      "suffix": " Hours",
+      "forceDoubleDigits": false,
+      "alwaysVisible": false
+    },
+    "minutes": {
+      "prefix": "",
+      "suffix": " Minutes",
+      "forceDoubleDigits": false,
+      "alwaysVisible": false
+    },
+    "seconds": {
+      "prefix": "",
+      "suffix": " Seconds",
+      "forceDoubleDigits": false,
+      "alwaysVisible": true
+    },
+    "milliseconds": {
+      "prefix": "",
+      "suffix": " Milliseconds",
+      "forceDoubleDigits": false,
+      "alwaysVisible": false
+    }
+  },
+  "paused" : {
+    "raw": "<gradient:#324fcb:#4a0e9c><prefix> <d> <h> <m> <s> <suffix></gradient>",
+    "prefix": "",
+    "suffix": " <white>(Paused)</white>",
+    "animated": false,
+    "animationSpeed": 1.0,
+    "days": {
+      "prefix": "",
+      "suffix": " Days",
+      "forceDoubleDigits": false,
+      "alwaysVisible": false
+    },
+    "hours": {
+      "prefix": "",
+      "suffix": " Hours",
+      "forceDoubleDigits": false,
+      "alwaysVisible": false
+    },
+    "minutes": {
+      "prefix": "",
+      "suffix": " Minutes",
+      "forceDoubleDigits": false,
+      "alwaysVisible": false
+    },
+    "seconds": {
+      "prefix": "",
+      "suffix": " Seconds",
+      "forceDoubleDigits": false,
+      "alwaysVisible": true
+    },
+    "milliseconds": {
+      "prefix": "",
+      "suffix": " Milliseconds",
+      "forceDoubleDigits": false,
+      "alwaysVisible": false
+    }
+  },
+  "stopped" : {
+    "raw": "<gradient:#324fcb:#4a0e9c><prefix> <d> <h> <m> <s> <suffix></gradient>",
+    "prefix": "",
+    "suffix": " <white>(Stopped)</white>",
+    "animated": false,
+    "animationSpeed": 1.0,
+    "days": {
+      "prefix": "",
+      "suffix": " Days",
+      "forceDoubleDigits": false,
+      "alwaysVisible": false
+    },
+    "hours": {
+      "prefix": "",
+      "suffix": " Hours",
+      "forceDoubleDigits": false,
+      "alwaysVisible": false
+    },
+    "minutes": {
+      "prefix": "",
+      "suffix": " Minutes",
+      "forceDoubleDigits": false,
+      "alwaysVisible": false
+    },
+    "seconds": {
+      "prefix": "",
+      "suffix": " Seconds",
+      "forceDoubleDigits": false,
+      "alwaysVisible": true
+    },
+    "milliseconds": {
+      "prefix": "",
+      "suffix": " Milliseconds",
+      "forceDoubleDigits": false,
+      "alwaysVisible": false
+    }
+  }
+}
