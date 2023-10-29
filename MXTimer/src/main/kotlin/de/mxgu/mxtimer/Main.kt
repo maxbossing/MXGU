@@ -7,7 +7,6 @@ import de.maxbossing.mxpaper.main.prefix
 import de.maxbossing.mxpaper.translation.MXPaperTranslation
 import de.mxgu.mxtimer.command.TimerCommands
 import de.mxgu.mxtimer.timer.TimerManager
-import de.mxgu.mxtimer.utils.DesignHotReloader
 import de.mxgu.mxtimer.utils.info
 import de.mxgu.mxtimer.utils.warning
 import dev.jorel.commandapi.CommandAPI
@@ -62,9 +61,6 @@ class MXTimerMain: MXPaper() {
         // Activate the Timers
         TimerManager
 
-        // Starts the Watch Service to process Design changes and additions
-        DesignHotReloader
-
         // Register the Commands
         TimerCommands.timerCommand
         TimerCommands.personalTimerCommand
@@ -75,7 +71,6 @@ class MXTimerMain: MXPaper() {
 
     override fun shutdown() {
         TimerManager.shutdownTimers()
-        DesignHotReloader.watchChannel.close()
     }
 }
 /**

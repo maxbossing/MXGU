@@ -9,6 +9,7 @@ import de.mxgu.mxtimer.utils.debug
 import net.kyori.adventure.text.Component
 import java.util.*
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
@@ -98,6 +99,7 @@ abstract class AbstractTimer (
     var settings: TimerSettings
 ) {
     protected var isRunning = false
+    protected var animator = 1.0f
     /**
      * The state of the Timer
      */
@@ -200,22 +202,19 @@ abstract class AbstractTimer (
             }
 
         var raw = format.raw
-        //debug(cmp(raw))
 
         raw = raw.replace("<prefix>", format.prefix)
-        //debug(cmp(raw))
         raw = raw.replace("<suffix>", format.suffix)
-        //debug(cmp(raw))
         time.toComponents {days, hours, minutes, seconds, milliseconds ->
-            raw = raw.replace("<d>", buildTimeFormat(format.days, days.toInt()))
-            raw = raw.replace("<h>", buildTimeFormat(format.hours, hours))
-            raw = raw.replace("<m>", buildTimeFormat(format.minutes, minutes))
-            raw = raw.replace("<s>", buildTimeFormat(format.seconds, seconds))
-            raw = raw.replace("<ms>", buildTimeFormat(format.milliseconds, (milliseconds / 1000000)))
+            raw = raw.replace("<d>", buildTimeFormat(format.days, days.toInt(), DurationUnit.DAYS))
+            raw = raw.replace("<h>", buildTimeFormat(format.hours, hours, DurationUnit.HOURS))
+            raw = raw.replace("<m>", buildTimeFormat(format.minutes, minutes, DurationUnit.MINUTES))
+            raw = raw.replace("<s>", buildTimeFormat(format.seconds, seconds, DurationUnit.SECONDS))
+            raw = raw.replace("<ms>", buildTimeFormat(format.milliseconds, (milliseconds / 1000000), DurationUnit.MILLISECONDS))
         }
-        //debug(cmp(raw))
 
-        //debug(raw.deserialized)
+        if (format.animated)
+            raw = raw.replace("<*>", animator.toString())
 
         return raw.deserialized
     }
@@ -225,8 +224,8 @@ abstract class AbstractTimer (
      * @param design The [TimeDesign] which will be used to format and parse the time
      * @param time The [Duration] to parse
      */
-    open fun buildTimeFormat(design: TimeDesign, time: Int): String {
-        return if (!design.alwaysVisible && time <= 0) "" else "${design.prefix}${if (design.forceDoubleDigits && time < 10) 0 else ""}$time${design.suffix}"
+    open fun buildTimeFormat(design: TimeDesign, time: Int, unit: DurationUnit): String {
+        return if ((!design.alwaysVisible && time <= 0)) "" else "${design.prefix}${if (design.forceDoubleDigits && time < 10) 0 else ""}$time${design.suffix}"
     }
 }
 

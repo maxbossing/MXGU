@@ -4,11 +4,11 @@
   "creator": "Max Bossing",
   "displaySlot": "HOTBAR",
   "running" : {
-    "raw": "<rainbow><prefix> <d> <h> <m> <s> <suffix></rainbow>",
+    "raw": "<gradient:#9c4f96:#ff6355:#fba949:#fae442:#8bd448:#2aa8f2:<*>><prefix> <d> <h> <m> <s> <suffix></gradient>",
     "prefix": "",
     "suffix": "",
-    "animated": false,
-    "animationSpeed": 1.0,
+    "animated": true,
+    "animationSpeed": 0.02,
     "days": {
       "prefix": "",
       "suffix": " Days",
@@ -41,11 +41,11 @@
     }
   },
   "paused" : {
-    "raw": "<rainbow><prefix> <d> <h> <m> <s> <suffix></rainbow>",
+    "raw": "<gradient:#9c4f96:#ff6355:#fba949:#fae442:#8bd448:#2aa8f2:<*>><prefix> <d> <h> <m> <s> <suffix></gradient>",
     "prefix": "",
     "suffix": " <white>(Paused)</white>",
-    "animated": false,
-    "animationSpeed": 1.0,
+    "animated": true,
+    "animationSpeed": 0.02,
     "days": {
       "prefix": "",
       "suffix": " Days",
@@ -78,11 +78,11 @@
     }
   },
   "stopped" : {
-    "raw": "<rainbow><prefix> <d> <h> <m> <s> <suffix></rainbow>",
+    "raw": "<gradient:#9c4f96:#ff6355:#fba949:#fae442:#8bd448:#2aa8f2:<*>><prefix> <d> <h> <m> <s> <suffix></gradient>",
     "prefix": "",
     "suffix": " <white>(Stopped)</white>",
-    "animated": false,
-    "animationSpeed": 1.0,
+    "animated": true,
+    "animationSpeed": 0.02,
     "days": {
       "prefix": "",
       "suffix": " Days",

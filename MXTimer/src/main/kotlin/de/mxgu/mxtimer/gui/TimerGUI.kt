@@ -4,6 +4,7 @@ import de.maxbossing.mxpaper.MXColors
 import de.maxbossing.mxpaper.MXHeads
 import de.maxbossing.mxpaper.extensions.bukkit.*
 import de.maxbossing.mxpaper.extensions.deserialized
+import de.maxbossing.mxpaper.extensions.fancy
 import de.maxbossing.mxpaper.items.*
 import de.mxgu.mxtimer.cAccent
 import de.mxgu.mxtimer.cBase
@@ -340,9 +341,9 @@ class TimerSettingsGUI(val timer: Timer, val  player: Player) {
     fun allowJoinButton() = IntelligentItem.of(
         itemStack(Material.OAK_DOOR) {
             meta {
-                displayName(msg("timer.gui.settings.allowjoin.n", locale).color(cAccent).lore())
+                displayName(msg("gui.settings.allowjoin.n", locale).color(cAccent).lore())
                 setLore {
-                    for (l in msg("timer.gui.settings.allowjoin.l", locale).color(cBase).lore().split(Pattern.compile("\n"))) {
+                    for (l in msg("gui.settings.allowjoin.l", locale).color(cBase).lore().split(Pattern.compile("\n"))) {
                         lorelist += l
                     }
                     lorelist += cmp("")
@@ -355,7 +356,7 @@ class TimerSettingsGUI(val timer: Timer, val  player: Player) {
         timer.settings.allowJoin = !timer.settings.allowJoin
         it.currentItem!!.meta {
             setLore {
-                for (l in msg("timer.gui.settings.allowjoin.l", locale).color(cAccent).lore().split(Pattern.compile("\n"))) {
+                for (l in msg("gui.settings.allowjoin.l", locale).color(cAccent).lore().split(Pattern.compile("\n"))) {
                     lorelist += l
                 }
                 lorelist += cmp("")
@@ -490,12 +491,13 @@ class DesignPicker(val timer: Timer, val player: Player) {
     //TODO: Highlight currently used design with Netherite Upgrade trim
     fun design(name: String, design: TimerDesign): IntelligentItem {
         return IntelligentItem.of(
-            itemStack(material(name)) {
+            itemStack(if (timer.design == design) Material.NETHERITE_UPGRADE_SMITHING_TEMPLATE else material(name)) {
                 meta {
                     displayName(design.name.toComponent().color(cAccent).lore())
                     flag(ItemFlag.HIDE_ITEM_SPECIFICS)
                     setLore {
                         lorelist += msg("author", locale).color(cAccent).lore() + cmp(": ", cAccent).lore() + design.creator.toComponent().lore().color(cBase)
+                        lorelist += msg("displayslot", locale).color(cAccent).lore() + cmp(": ", cAccent).lore() + design.displaySlot.toString().fancy.toComponent().color(cBase).lore()
                         lorelist += cmp("")
                         lorelist += design.description.split("\n").map { it.toComponent().lore().color(cBase) }
                     }
@@ -503,6 +505,7 @@ class DesignPicker(val timer: Timer, val player: Player) {
             }
         ) {
             timer.design = design
+            DesignPicker(timer, player)
         }
     }
 }

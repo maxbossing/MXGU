@@ -32,6 +32,8 @@ object Permissions {
 
             // /timer reset
             const val RESET = BASE + ".reset"
+
+            const val RELOAD = BASE + ".reload"
         }
 
         // /ptimer

@@ -32,8 +32,6 @@ dependencies {
 
     implementation("io.github.rysefoxx.inventory:RyseInventory-Plugin:1.6.4")
 
-    compileOnly("com.github.vishna:watchservice-ktx:master-SNAPSHOT")
-
     implementation(project(":mxpaperlight"))
 }
 
@@ -51,7 +49,6 @@ tasks {
     }
     shadowJar {
         relocate("de.mxgu.mxpaper", "de.mxgu.mxtimer.mxpaper")
-        relocate("dev.vishna.watchservice", "de.mxgu.mxtimer.watchservice")
     }
 }
 

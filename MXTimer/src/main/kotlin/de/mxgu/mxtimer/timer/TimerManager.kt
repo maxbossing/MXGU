@@ -16,9 +16,9 @@ import kotlin.time.Duration
 
 object TimerManager {
 
-    var designs: MutableMap<String, TimerDesign>
+    lateinit var designs: MutableMap<String, TimerDesign>
 
-    var timers: MutableMap<String, Timer>
+    lateinit var timers: MutableMap<String, Timer>
 
     val globalTimer get() =  timers["global-timer"]!!
 
@@ -100,7 +100,19 @@ object TimerManager {
         fileStructure()
 
         // Load Timer Designs
+        loadDesigns()
 
+        // Load Timers
+        loadTimers()
+
+    }
+
+    private fun fileStructure() {
+        File(mxtimer.dataFolder.path + "/designs").mkdirs()
+        File(mxtimer.dataFolder.path + "/timers").mkdirs()
+    }
+
+    fun loadDesigns() {
         info(cmp("Loading Timer Designs..."))
         designs = mutableMapOf()
         if (File(mxtimer.dataFolder.path + "/designs").listFiles() == null) {
@@ -112,23 +124,26 @@ object TimerManager {
             }
         }
 
-
+        debug("Dumping default designs...")
         // Create Template Designs
         val defaultdesigns = listOf(
             "default",
             "blacknwhite",
-            "rainbow"
+            "rainbow",
+            "classic"
         )
 
         for (defaultdesign in defaultdesigns) {
+            mxtimer.saveResource("designs/$defaultdesign.json", true)
             if (!designs.containsKey(defaultdesign)) {
-                mxtimer.saveResource("designs/$defaultdesign.json", true)
                 designs += defaultdesign to Json.decodeFromString(TimerDesign.serializer(), File(mxtimer.dataFolder.path + "/designs/$defaultdesign.json").readText())
+            } else {
+                designs[defaultdesign] = Json.decodeFromString(TimerDesign.serializer(), File(mxtimer.dataFolder.path + "/designs/$defaultdesign.json").readText())
             }
         }
+    }
 
-        // Load Timers
-
+    private fun loadTimers() {
         info(cmp("Loading Timers..."))
         timers = mutableMapOf()
         if (File(mxtimer.dataFolder.path + "/timers").listFiles() == null) {
@@ -158,12 +173,6 @@ object TimerManager {
 
         info(cmp("Timers Loaded!"))
     }
-
-    fun fileStructure() {
-        File(mxtimer.dataFolder.path + "/designs").mkdirs()
-        File(mxtimer.dataFolder.path + "/timers").mkdirs()
-    }
-
 
     /**
      * Creates a New [Timer], set up to be the global timer

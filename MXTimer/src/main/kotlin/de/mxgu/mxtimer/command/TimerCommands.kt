@@ -27,6 +27,12 @@ object TimerCommands {
             if (player.hasPermission(Permissions.Commands.Timer.GUI))
                 TimerGUI(timer, player)
         }
+        literalArgument("reload") {
+            withPermission(Permissions.Commands.Timer.RELOAD)
+            anyExecutor { sender, args ->
+                TimerManager.loadDesigns()
+            }
+        }
         literalArgument("resume") {
             withPermission(Permissions.Commands.Timer.STATE)
             playerExecutor { player, _ ->
@@ -250,6 +256,20 @@ object TimerCommands {
                 }
             }
         }
+        literalArgument("designs") {
+            literalArgument("list") {
+                anyExecutor {p, _ ->
+                    TimerManager.designs.forEach { t, u ->
+                        p.sendMessage("========== $t ==========")
+                        p.sendMessage("Name        -> ${u.name}")
+                        p.sendMessage("Description -> ${u.description}")
+                        p.sendMessage("Author      -> ${u.creator}")
+                        p.sendMessage("DisplaySlot -> ${u.displaySlot}")
+                    }
+                }
+            }
+        }
     }
+
 
 }
