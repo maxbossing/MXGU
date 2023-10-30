@@ -140,14 +140,6 @@ object TimerCommands {
         }
     }
 
-    //TODO: Timer still drawn if disabled
-    /*
-    * Current knowledge
-    * A new timer is created if old one is disabled
-    * Get Or add personal timer is not called
-    *
-    *
-    * */
     val personalTimerCommand = commandTree("ptimer") {
         withRequirement { ConfigManager.config.personalTimers }
         withPermission(Permissions.Commands.PersonalTimer.BASE)
