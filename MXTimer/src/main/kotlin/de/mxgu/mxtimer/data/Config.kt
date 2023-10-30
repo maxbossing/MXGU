@@ -1,11 +1,10 @@
+@file:Suppress("unused")
 package de.mxgu.mxtimer.data
 
-import de.mxgu.mxtimer.debug
 import de.mxgu.mxtimer.mxtimer
 import de.mxgu.mxtimer.utils.debug
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.decodeFromStream
 import java.io.File
 
 @Serializable
@@ -16,7 +15,7 @@ object ConfigManager {
 
     var config: Config
 
-    val file = File(mxtimer.dataFolder.path + "/config.json")
+    private val file = File(mxtimer.dataFolder.path + "/config.json")
 
     init {
         if (!file.exists()) {

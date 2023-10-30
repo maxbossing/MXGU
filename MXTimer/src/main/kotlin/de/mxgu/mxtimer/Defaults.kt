@@ -1,7 +1,7 @@
 package de.mxgu.mxtimer
 
 import de.maxbossing.mxpaper.MXColors
+import net.kyori.adventure.text.format.TextColor
 
-var cBase = MXColors.GRAY
-var cAccent = MXColors.CORNFLOWERBLUE
-var cError = MXColors.RED
+var cBase: TextColor = MXColors.GRAY
+var cAccent: TextColor = MXColors.CORNFLOWERBLUE

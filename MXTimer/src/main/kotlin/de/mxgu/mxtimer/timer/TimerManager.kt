@@ -1,16 +1,14 @@
+@file:Suppress("unused", "MemberVisibilityCanBePrivate")
 package de.mxgu.mxtimer.timer
 
 import de.maxbossing.mxpaper.extensions.bukkit.cmp
-import de.maxbossing.mxpaper.extensions.println
 import de.mxgu.mxtimer.data.*
 import de.mxgu.mxtimer.mxtimer
 import de.mxgu.mxtimer.utils.debug
 import de.mxgu.mxtimer.utils.info
-import io.netty.buffer.UnpooledUnsafeDirectByteBuf
 import kotlinx.serialization.json.Json
 import java.io.File
 import java.util.*
-import kotlin.concurrent.timer
 import kotlin.time.Duration
 
 object TimerManager {
@@ -36,7 +34,7 @@ object TimerManager {
      *
      * The UUID is the File name in timer/styles
      *
-     * If the design is not present, it will fallback to default style
+     * If the design is not present, it will fall back to default style
      *
      * @param uuid the uuid of the style
      * @return the TimerDesign if present
@@ -53,7 +51,7 @@ object TimerManager {
     /**
      * Get the [UUID] of a [Timer]
      * @param timer The timer to search for the UUID
-     * @reurn the UUID of the Timer
+     * @return the UUID of the Timer
      */
     fun getUUID(timer: Timer): UUID = timers.entries.associateBy({ it.value }) { it.key }[timer]!!
 
@@ -81,11 +79,10 @@ object TimerManager {
      * @param timer The timer to add if no timer exists
      */
     fun getOrAddPersonalTimer(uuid: UUID, timer: TimerData): Timer {
-        if (hasPersonalTimer(uuid)) {
-            return getPersonalTimer(uuid)!!
-        }
-        else {
-            return addPersonalTimer(uuid, timer.deserialize())
+        return if (hasPersonalTimer(uuid)) {
+            getPersonalTimer(uuid)!!
+        } else {
+            addPersonalTimer(uuid, timer.deserialize())
         }
     }
 
@@ -123,7 +120,7 @@ object TimerManager {
      * Shutdowns all timers and writes them to disk
      */
     fun shutdownTimers() {
-        timers.forEach {_, u ->
+        timers.forEach { (_, u) ->
             u.state = TimerState.STOPPED
         }
         saveTimers()
@@ -166,22 +163,22 @@ object TimerManager {
 
         debug("Dumping default designs...")
         // Create Template Designs
-        val defaultdesigns = listOf(
+        val defaultDesigns = listOf(
             "default",
             "blacknwhite",
             "rainbow",
             "classic"
         )
 
-        for (defaultdesign in defaultdesigns) {
-            mxtimer.saveResource("designs/$defaultdesign.json", true)
+        for (defaultDesign in defaultDesigns) {
+            mxtimer.saveResource("designs/$defaultDesign.json", true)
 
-            if (defaultdesign == "default")
-                defaultDesign = Json.decodeFromString(TimerDesign.serializer(), File(mxtimer.dataFolder.path + "/designs/$defaultdesign.json").readText())
-            else if (!designs.containsKey(defaultdesign)) {
-                designs += defaultdesign to Json.decodeFromString(TimerDesign.serializer(), File(mxtimer.dataFolder.path + "/designs/$defaultdesign.json").readText())
+            if (defaultDesign == "default")
+                this.defaultDesign = Json.decodeFromString(TimerDesign.serializer(), File(mxtimer.dataFolder.path + "/designs/$defaultDesign.json").readText())
+            else if (!designs.containsKey(defaultDesign)) {
+                designs += defaultDesign to Json.decodeFromString(TimerDesign.serializer(), File(mxtimer.dataFolder.path + "/designs/$defaultDesign.json").readText())
             } else {
-                designs[defaultdesign] = Json.decodeFromString(TimerDesign.serializer(), File(mxtimer.dataFolder.path + "/designs/$defaultdesign.json").readText())
+                designs[defaultDesign] = Json.decodeFromString(TimerDesign.serializer(), File(mxtimer.dataFolder.path + "/designs/$defaultDesign.json").readText())
             }
         }
     }
@@ -189,6 +186,7 @@ object TimerManager {
     /**
      * Loads all timers from disk
      */
+    //TODO: Handle listFiles() properly
     private fun loadTimers() {
         info(cmp("Loading Timers..."))
         timers = mutableMapOf()
@@ -243,7 +241,7 @@ object TimerManager {
         time: Duration = Duration.ZERO,
         activate: Boolean = true,
         visible: Boolean = true,
-        settings: TimerSettings = TimerSettings(true, true)
+        settings: TimerSettings = TimerSettings(allowJoin = true, true)
     ): Timer {
         return Timer (
             design = design,

@@ -22,7 +22,7 @@ class MXTimerMain: MXPaper() {
     }
 
     // RyseInventory Manager
-    val invManager: InventoryManager = InventoryManager(this)
+    private val invManager: InventoryManager = InventoryManager(this)
 
     override fun load() {
         // This needs to be called first

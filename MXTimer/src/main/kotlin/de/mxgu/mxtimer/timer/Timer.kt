@@ -1,3 +1,4 @@
+@file:Suppress("unused", "MemberVisibilityCanBePrivate")
 package de.mxgu.mxtimer.timer
 
 import de.maxbossing.mxpaper.MXColors
@@ -7,7 +8,6 @@ import de.maxbossing.mxpaper.extensions.bukkit.title
 import de.maxbossing.mxpaper.extensions.bukkit.toComponent
 import de.maxbossing.mxpaper.extensions.deserialized
 import de.maxbossing.mxpaper.extensions.onlinePlayers
-import de.maxbossing.mxpaper.extensions.println
 import de.maxbossing.mxpaper.runnables.task
 import de.mxgu.mxtimer.data.*
 import de.mxgu.mxtimer.mxtimer
@@ -42,7 +42,7 @@ class Timer(
     private var isRunning = false
 
     /**
-     * Current animator, sed for minimessage animations
+     * Current animator, sed for MiniMessage animations
      */
     var animator = 1.0f
 
@@ -56,7 +56,7 @@ class Timer(
      *
      * Is null if the timer is the global timer
      */
-    val player = playerUUID?.let { if (playerUUID == null) null else Bukkit.getOfflinePlayer(it) }
+    val player = playerUUID?.let { Bukkit.getOfflinePlayer(it) }
 
     private val bossbarListener = listen<PlayerQuitEvent> {
         bossbar.removeViewer(it.player)
@@ -107,7 +107,7 @@ class Timer(
             val target: Audience? = getAudience()
 
 
-            // Janky workaround because I'm to lazy to implement proper handling of the bossbars :)
+            // janky workaround because I'm to lazy to implement proper handling of the Bossbars :)
             onlinePlayers.filter {  TimerManager.hasPersonalTimer(it.uniqueId) && TimerManager.getPersonalTimer(it.uniqueId)?.visible == true }.forEach { bossbar.removeViewer(it) }
 
             // Animations
@@ -144,7 +144,7 @@ class Timer(
             }
 
             if (time <= ZERO && direction == TimerDirection.COUNTDOWN) {
-                // Stopps the timer
+                // Stops the timer
                 state = TimerState.STOPPED
                 // The 0 is not being removed when the timer stops, I don't have time to handle that properly
                 target?.title(cmp(""), cmp(""))
@@ -202,7 +202,7 @@ class Timer(
     fun sendTimer(target: Audience) {
         if (design.displaySlot == DisplaySlot.HOTBAR) {
             bossbar.removeViewer(target)
-            target?.sendActionBar(buildFormat(design, time))
+            target.sendActionBar(buildFormat(design, time))
         } else if (design.displaySlot == DisplaySlot.BOSSBAR) {
             bossbar.name(buildFormat(design, time))
             bossbar.addViewer(target)
@@ -228,11 +228,11 @@ class Timer(
         raw = raw.replace("<prefix>", format.prefix)
         raw = raw.replace("<suffix>", format.suffix)
         time.toComponents {days, hours, minutes, seconds, milliseconds ->
-            raw = raw.replace("<d>", buildTimeFormat(format.days, days.toInt(), DurationUnit.DAYS))
-            raw = raw.replace("<h>", buildTimeFormat(format.hours, hours, DurationUnit.HOURS))
-            raw = raw.replace("<m>", buildTimeFormat(format.minutes, minutes, DurationUnit.MINUTES))
-            raw = raw.replace("<s>", buildTimeFormat(format.seconds, seconds, DurationUnit.SECONDS))
-            raw = raw.replace("<ms>", buildTimeFormat(format.milliseconds, (milliseconds / 1000000), DurationUnit.MILLISECONDS))
+            raw = raw.replace("<d>", buildTimeFormat(format.days, days.toInt()))
+            raw = raw.replace("<h>", buildTimeFormat(format.hours, hours))
+            raw = raw.replace("<m>", buildTimeFormat(format.minutes, minutes))
+            raw = raw.replace("<s>", buildTimeFormat(format.seconds, seconds))
+            raw = raw.replace("<ms>", buildTimeFormat(format.milliseconds, (milliseconds / 1000000)))
         }
 
         if (format.animated)
@@ -246,7 +246,7 @@ class Timer(
      * @param design The [TimeDesign] which will be used to format and parse the time
      * @param time The [Duration] to parse
      */
-    fun buildTimeFormat(design: TimeDesign, time: Int, unit: DurationUnit): String {
+    fun buildTimeFormat(design: TimeDesign, time: Int): String {
         return if ((!design.alwaysVisible && time <= 0)) "" else "${design.prefix}${if (design.forceDoubleDigits && time < 10) 0 else ""}$time${design.suffix}"
     }
 

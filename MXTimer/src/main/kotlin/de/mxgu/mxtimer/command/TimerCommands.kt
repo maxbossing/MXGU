@@ -10,14 +10,14 @@ import de.mxgu.mxtimer.timer.globalTimer
 import de.mxgu.mxtimer.utils.Permissions
 import de.mxgu.mxtimer.utils.msg
 import dev.jorel.commandapi.kotlindsl.*
-import kotlin.time.Duration
+import java.util.*
 import kotlin.time.Duration.Companion.ZERO
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
-
+//TODO: Replace deprecated "multiLiteralArgument()"
 object TimerCommands {
     val timerCommand = commandTree("timer") {
         val timer = globalTimer
@@ -127,10 +127,10 @@ object TimerCommands {
             withPermission(Permissions.Commands.Timer.RESET)
             anyExecutor { _, _ ->
                 timer.state = TimerState.STOPPED
-                timer.time = Duration.ZERO
+                timer.time = ZERO
             }
         }
-        literalArgument("direction",) {
+        literalArgument("direction") {
             withPermission(Permissions.Commands.Timer.DIRECTION)
             multiLiteralArgument("direction", listOf("countUp", "countDown"), false) {
                 anyExecutor { _, commandArguments ->
@@ -141,35 +141,28 @@ object TimerCommands {
     }
 
     val personalTimerCommand = commandTree("ptimer") {
+        fun timerData(uuid: UUID) = TimerData(
+            "default",
+            ZERO,
+            true,
+            TimerDirection.COUNTUP,
+            uuid,
+            TimerSettings(allowJoin = true, freezeOnPause = true),
+            true
+        )
         withRequirement { ConfigManager.config.personalTimers }
         withPermission(Permissions.Commands.PersonalTimer.BASE)
         playerExecutor { player, _ ->
             TimerGUI(TimerManager.getOrAddPersonalTimer(
                 player.uniqueId,
-                TimerData(
-                    "default",
-                    ZERO,
-                    true,
-                    TimerDirection.COUNTUP,
-                    player.uniqueId,
-                    TimerSettings(true, true),
-                    true
-                )
+                timerData(player.uniqueId)
             ), player)
         }
         literalArgument("enable") {
             playerExecutor { player, _ ->
                 val timer = TimerManager.getOrAddPersonalTimer(
                     player.uniqueId,
-                    TimerData(
-                        "default",
-                        ZERO,
-                        true,
-                        TimerDirection.COUNTUP,
-                        player.uniqueId,
-                        TimerSettings(true, true),
-                        true
-                    )
+                    timerData(player.uniqueId)
                 )
                 timer.visible = true
             }
@@ -178,15 +171,7 @@ object TimerCommands {
             playerExecutor { player, _ ->
                 val timer = TimerManager.getOrAddPersonalTimer(
                     player.uniqueId,
-                    TimerData(
-                        "default",
-                        ZERO,
-                        true,
-                        TimerDirection.COUNTUP,
-                        player.uniqueId,
-                        TimerSettings(true, true),
-                        true
-                    )
+                    timerData(player.uniqueId)
                 )
                 timer.visible = false
             }
@@ -196,15 +181,7 @@ object TimerCommands {
             playerExecutor { player, _ ->
                 val timer = TimerManager.getOrAddPersonalTimer(
                     player.uniqueId,
-                    TimerData(
-                        "default",
-                        ZERO,
-                        true,
-                        TimerDirection.COUNTUP,
-                        player.uniqueId,
-                        TimerSettings(true, true),
-                        true
-                    )
+                    timerData(player.uniqueId)
                 )
                 if (timer.state == TimerState.RUNNING) {
                     player.sendMessage(prefix + msg("command.error.alreadyrunning", player.locale()))
@@ -220,15 +197,7 @@ object TimerCommands {
             playerExecutor { player, _ ->
                 val timer = TimerManager.getOrAddPersonalTimer(
                     player.uniqueId,
-                    TimerData(
-                        "default",
-                        ZERO,
-                        true,
-                        TimerDirection.COUNTUP,
-                        player.uniqueId,
-                        TimerSettings(true, true),
-                        true
-                    )
+                    timerData(player.uniqueId)
                 )
                 if (timer.state != TimerState.RUNNING) {
                     player.sendMessage(prefix + msg("command.error.alreadypaused", player.locale()))
@@ -246,15 +215,7 @@ object TimerCommands {
                     playerExecutor {player, arguments ->
                         val timer = TimerManager.getOrAddPersonalTimer(
                             player.uniqueId,
-                            TimerData(
-                                "default",
-                                ZERO,
-                                true,
-                                TimerDirection.COUNTUP,
-                                player.uniqueId,
-                                TimerSettings(true, true),
-                                true
-                            )
+                            timerData(player.uniqueId)
                         )
 
                         when (arguments["type"]) {
@@ -274,15 +235,7 @@ object TimerCommands {
                     playerExecutor {player, arguments ->
                         val timer = TimerManager.getOrAddPersonalTimer(
                             player.uniqueId,
-                            TimerData(
-                                "default",
-                                ZERO,
-                                true,
-                                TimerDirection.COUNTUP,
-                                player.uniqueId,
-                                TimerSettings(true, true),
-                                true
-                            )
+                            timerData(player.uniqueId)
                         )
                         when (arguments["type"]) {
                             "days" -> timer.subTime((arguments["amount"]as Int).days)
@@ -299,34 +252,18 @@ object TimerCommands {
             playerExecutor { player, _ ->
                 val timer = TimerManager.getOrAddPersonalTimer(
                     player.uniqueId,
-                    TimerData(
-                        "default",
-                        ZERO,
-                        true,
-                        TimerDirection.COUNTUP,
-                        player.uniqueId,
-                        TimerSettings(true, true),
-                        true
-                    )
+                    timerData(player.uniqueId)
                 )
                 timer.state = TimerState.STOPPED
-                timer.time = Duration.ZERO
+                timer.time = ZERO
             }
         }
-        literalArgument("direction",) {
+        literalArgument("direction") {
             multiLiteralArgument("direction", listOf("countUp", "countDown"), false) {
                 playerExecutor { player, arguments ->
                     val timer = TimerManager.getOrAddPersonalTimer(
                         player.uniqueId,
-                        TimerData(
-                            "default",
-                            ZERO,
-                            true,
-                            TimerDirection.COUNTUP,
-                            player.uniqueId,
-                            TimerSettings(true, true),
-                            true
-                        )
+                        timerData(player.uniqueId)
                     )
                     timer.direction = if ((arguments["direction"] as String) == "countUp") TimerDirection.COUNTUP else TimerDirection.COUNTDOWN
                 }
@@ -342,7 +279,7 @@ object TimerCommands {
         literalArgument("timers") {
             literalArgument("list") {
                 anyExecutor { p, _ ->
-                    TimerManager.timers.forEach { t, u ->
+                    TimerManager.timers.forEach { (t, u) ->
                         p.sendMessage("========== $t ===========")
                         p.sendMessage("Time         -> ${u.time}")
                         p.sendMessage("Visible      -> ${u.visible}")
@@ -357,7 +294,7 @@ object TimerCommands {
         literalArgument("designs") {
             literalArgument("list") {
                 anyExecutor {p, _ ->
-                    TimerManager.designs.forEach { t, u ->
+                    TimerManager.designs.forEach { (t, u) ->
                         p.sendMessage("========== $t ==========")
                         p.sendMessage("Name        -> ${u.name}")
                         p.sendMessage("Description -> ${u.description}")

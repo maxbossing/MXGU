@@ -2,7 +2,7 @@ package de.mxgu.mxtimer.data
 
 import de.mxgu.mxtimer.timer.TimerManager
 import kotlinx.serialization.Serializable
-import java.util.*
+import de.mxgu.mxtimer.timer.Timer
 
 @Serializable
 data class TimerDesign (
@@ -38,7 +38,7 @@ data class TimeDesign (
 )
 
 /**
- * Where an [AbstractTimer] is displayed
+ * Where an [Timer] is displayed
  */
 enum class DisplaySlot {
     /**

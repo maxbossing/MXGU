@@ -3,7 +3,6 @@ package de.mxgu.mxtimer.gui
 import de.maxbossing.mxpaper.MXColors
 import de.maxbossing.mxpaper.MXHeads
 import de.maxbossing.mxpaper.extensions.bukkit.*
-import de.maxbossing.mxpaper.extensions.deserialized
 import de.maxbossing.mxpaper.extensions.fancy
 import de.maxbossing.mxpaper.items.*
 import de.mxgu.mxtimer.cAccent
@@ -15,7 +14,6 @@ import de.mxgu.mxtimer.mxtimer
 import de.mxgu.mxtimer.timer.*
 import de.mxgu.mxtimer.utils.msg
 import io.github.rysefoxx.inventory.plugin.content.IntelligentItem
-import io.github.rysefoxx.inventory.plugin.content.IntelligentItemError
 import io.github.rysefoxx.inventory.plugin.content.InventoryContents
 import io.github.rysefoxx.inventory.plugin.content.InventoryProvider
 import io.github.rysefoxx.inventory.plugin.pagination.Pagination
@@ -32,40 +30,25 @@ import kotlin.time.DurationUnit
 
 import kotlin.time.toDuration
 
-class TimerGUI(val timer: Timer, val player: Player) {
+class TimerGUI(val timer: Timer, private val player: Player) {
 
-    val locale = player.locale()
-
-    class error : IntelligentItemError {
-        override fun cantClick(player: Player?, item: IntelligentItem?) {
-            super.cantClick(player, item)
-        }
-
-        override fun cantSee(player: Player?, item: IntelligentItem?) {
-            super.cantSee(player, item)
-        }
-    }
+    private val locale = player.locale()
 
 
     private val separator = cmp("-", cBase).lore()
 
-    val click = msg("click", locale).color(cBase).lore() + cmp(" ∙ ", cAccent).lore()
+    private val click = msg("click", locale).color(cBase).lore() + cmp(" ∙ ", cAccent).lore()
 
-    val rightClick = msg("right", locale).color(cBase).lore() + separator + click
-    val shiftRightClick = msg("shift", locale).color(cBase).lore() + separator + rightClick
+    private val rightClick = msg("right", locale).color(cBase).lore() + separator + click
+    private val shiftRightClick = msg("shift", locale).color(cBase).lore() + separator + rightClick
 
-    val leftClick = msg("left", locale).color(cBase).lore() + separator + click
-    val shiftLeftClick = msg("shift", locale).color(cBase).lore() + separator + click
+    private val leftClick = msg("left", locale).color(cBase).lore() + separator + click
+    private val shiftLeftClick = msg("shift", locale).color(cBase).lore() + separator + click
 
-    val second = msg("second", locale).color(cBase).lore()
-    val minute = msg("minute", locale).color(cBase).lore()
-    val hour = msg("hour", locale).color(cBase).lore()
-    val day = msg("day", locale).color(cBase).lore()
-
-    val seconds = msg("seconds", locale).color(cBase).lore()
-    val minutes = msg("minutes", locale).color(cBase).lore()
-    val hours = msg("hours", locale).color(cBase).lore()
-    val days = msg("days", locale).color(cBase).lore()
+    private val seconds = msg("seconds", locale).color(cBase).lore()
+    private val minutes = msg("minutes", locale).color(cBase).lore()
+    private val hours = msg("hours", locale).color(cBase).lore()
+    private val days = msg("days", locale).color(cBase).lore()
 
 
     fun timeButton(unit: DurationUnit, item: Material) = IntelligentItem.of(
@@ -247,7 +230,7 @@ class TimerGUI(val timer: Timer, val player: Player) {
         }
     }
 
-    val timerMenu = RyseInventory
+    private val timerMenu = RyseInventory
         .builder()
         .title(msg("gui.title", player.locale()))
         .rows(4)
@@ -296,10 +279,10 @@ class TimerGUI(val timer: Timer, val player: Player) {
     }
 }
 
-class TimerSettingsGUI(val timer: Timer, val  player: Player) {
-    val locale = player.locale()
+class TimerSettingsGUI(val timer: Timer, private val player: Player) {
+    private val locale = player.locale()
 
-    val back = msg("back", locale).color(cAccent).lore()
+    private val back = msg("back", locale).color(cAccent).lore()
 
     fun backButton(): IntelligentItem {
         val head = itemStack(Material.PLAYER_HEAD) {
@@ -369,7 +352,7 @@ class TimerSettingsGUI(val timer: Timer, val  player: Player) {
     }
 
 
-    val settingsMenu = RyseInventory
+    private val settingsMenu = RyseInventory
         .builder()
         .title(msg("gui.settings.title", locale))
         .rows(4)
@@ -401,8 +384,8 @@ class TimerSettingsGUI(val timer: Timer, val  player: Player) {
     }
 }
 
-class DesignPicker(val timer: Timer, val player: Player) {
-    val locale = player.locale()
+class DesignPicker(val timer: Timer, private val player: Player) {
+    private val locale = player.locale()
 
     fun backButton(): IntelligentItem {
         val head = itemStack(Material.PLAYER_HEAD) {
@@ -415,7 +398,7 @@ class DesignPicker(val timer: Timer, val player: Player) {
 
     }
 
-    val pickerMenu = RyseInventory
+    private val pickerMenu = RyseInventory
         .builder()
         .rows(4)
         .title(msg("timer.gui.design.title", locale))
@@ -464,7 +447,7 @@ class DesignPicker(val timer: Timer, val player: Player) {
                     pagination.inventory().open(player, pagination.next().page())
                 })
 
-                TimerManager.designs.forEach { t, u ->
+                TimerManager.designs.forEach { (t, u) ->
                     pagination.addItem(design(t, u))
                 }
 
@@ -483,14 +466,12 @@ class DesignPicker(val timer: Timer, val player: Player) {
      *
      * As long as the design is not renamed
      */
-    fun material(name: String): Material = Material.entries.filter { it.name.endsWith("ARMOR_TRIM_SMITHING_TEMPLATE") }.random(Random(name.hashCode()))
+    private fun material(name: String): Material = Material.entries.filter { it.name.endsWith("ARMOR_TRIM_SMITHING_TEMPLATE") }.random(Random(name.hashCode()))
 
     /**
      * Creates an IntelligentItem for the given TimerDesign
      */
-    //TODO: Show author
     //TODO: Maybe show preview
-    //TODO: Highlight currently used design with Netherite Upgrade trim
     fun design(name: String, design: TimerDesign): IntelligentItem {
         return IntelligentItem.of(
             itemStack(if (timer.design == design) Material.NETHERITE_UPGRADE_SMITHING_TEMPLATE else material(name)) {

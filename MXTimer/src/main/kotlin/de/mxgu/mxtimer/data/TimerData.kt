@@ -25,7 +25,7 @@ data class TimerSettings (
 )
 
 /**
- * The direction in which a [de.mxgu.mxtimer.timer.Timer] runs
+ * The direction in which a [Timer] runs
  */
 enum class TimerDirection {
     /**
@@ -40,7 +40,7 @@ enum class TimerDirection {
 }
 
 /**
- * The state a [de.mxgu.mxtimer.timer.Timer] is in
+ * The state a [Timer] is in
  */
 enum class TimerState {
     /**
@@ -64,7 +64,7 @@ enum class TimerState {
 
 fun Timer.serialize() : TimerData {
     return TimerData(
-        design.id()!!,
+        design.id(),
         time,
         visible,
         direction,

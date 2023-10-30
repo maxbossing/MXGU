@@ -1,3 +1,4 @@
+@file:Suppress("unused")
 package de.mxgu.mxtimer.utils
 
 import de.maxbossing.mxpaper.MXColors
@@ -6,7 +7,6 @@ import de.maxbossing.mxpaper.extensions.bukkit.plus
 import de.maxbossing.mxpaper.extensions.bukkit.toComponent
 import de.maxbossing.mxpaper.extensions.console
 import de.maxbossing.mxpaper.main.prefix
-import de.mxgu.mxtimer.MXTimerMain.Companion.mxtimer
 import net.kyori.adventure.text.Component
 
 fun debug(vararg msg: Component) {
