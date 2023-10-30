@@ -9,6 +9,8 @@ import de.maxbossing.mxpaper.items.*
 import de.mxgu.mxtimer.cAccent
 import de.mxgu.mxtimer.cBase
 import de.mxgu.mxtimer.data.TimerDesign
+import de.mxgu.mxtimer.data.TimerDirection
+import de.mxgu.mxtimer.data.TimerState
 import de.mxgu.mxtimer.mxtimer
 import de.mxgu.mxtimer.timer.*
 import de.mxgu.mxtimer.utils.msg

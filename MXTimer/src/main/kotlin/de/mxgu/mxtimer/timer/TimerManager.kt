@@ -1,26 +1,35 @@
 package de.mxgu.mxtimer.timer
 
 import de.maxbossing.mxpaper.extensions.bukkit.cmp
-import de.mxgu.mxtimer.data.ConfigManager
-import de.mxgu.mxtimer.data.TimerData
-import de.mxgu.mxtimer.data.TimerDesign
-import de.mxgu.mxtimer.data.TimerSettings
+import de.maxbossing.mxpaper.extensions.println
+import de.mxgu.mxtimer.data.*
 import de.mxgu.mxtimer.mxtimer
 import de.mxgu.mxtimer.utils.debug
-import de.mxgu.mxtimer.utils.getResourceFolderFiles
 import de.mxgu.mxtimer.utils.info
+import io.netty.buffer.UnpooledUnsafeDirectByteBuf
 import kotlinx.serialization.json.Json
 import java.io.File
 import java.util.*
+import kotlin.concurrent.timer
 import kotlin.time.Duration
 
 object TimerManager {
 
-    lateinit var designs: MutableMap<String, TimerDesign>
+    var designs: MutableMap<String, TimerDesign> = mutableMapOf()
 
-    lateinit var timers: MutableMap<String, Timer>
+    var timers: MutableMap<UUID, Timer> = mutableMapOf()
 
-    val globalTimer get() =  timers["global-timer"]!!
+    /**
+     * The global timer
+     */
+    lateinit var globalTimer: Timer
+        private set
+
+    /**
+     * A default [TimerDesign] for a [Timer]
+     */
+    lateinit var defaultDesign: TimerDesign
+        private set
 
     /**
      * Gets a timer design by its UUID
@@ -32,40 +41,66 @@ object TimerManager {
      * @param uuid the uuid of the style
      * @return the TimerDesign if present
      */
-    fun getDesign(uuid: String): TimerDesign = if (designs.containsKey(uuid)) designs[uuid]!! else templateDesign()
+    fun getDesign(uuid: String): TimerDesign = if (designs.containsKey(uuid)) designs[uuid]!! else defaultDesign
 
     /**
-     * Gets the UUID of a TimerDesign by design
-     *
-     * The UUID is the File name in timer/styles
-     *
-     * @param design The TimerDesign
-     * @return The UUID if present
+     * Get the [UUID] of a [TimerDesign]
+     * @param design The design to search for the uuid
+     * @return the UUID of the Design
      */
-    fun getDesignUUID(design: TimerDesign): String = designs.entries.associateBy({ it.value }) { it.key }[design]!!
+    fun getUUID(design: TimerDesign): String = designs.entries.associateBy({ it.value }) { it.key }[design]!!
+
+    /**
+     * Get the [UUID] of a [Timer]
+     * @param timer The timer to search for the UUID
+     * @reurn the UUID of the Timer
+     */
+    fun getUUID(timer: Timer): UUID = timers.entries.associateBy({ it.value }) { it.key }[timer]!!
+
+    /**
+     * Checks whether this Player has a Personal timer
+     * @param uuid the UUID of the Player to check
+     */
+    fun hasPersonalTimer(uuid: UUID): Boolean = timers.containsKey(uuid)
 
     /**
      * Gets a Personal [Timer] from a Players UUID
-     * If the Timer does not exist one will be created
+     *
+     * May be null if the player does not have a timer
      * @param uuid The Player UUID
      * @return His Personal Timer
      */
-    fun getPersonalTimer(uuid: String): Timer {
-        if (!timers.containsKey(uuid))
-            timers += uuid to newTimer(global = false, playerUUID = uuid)
-        return timers[uuid]!!
+    fun getPersonalTimer(uuid: UUID): Timer? = timers[uuid]
+
+    /**
+     * Gets a Personal [Timer] from a Player UUID
+     *
+     * If the player does not have a Personal timer, one will be created
+     *
+     * @param uuid The Players UUID
+     * @param timer The timer to add if no timer exists
+     */
+    fun getOrAddPersonalTimer(uuid: UUID, timer: TimerData): Timer {
+        if (hasPersonalTimer(uuid)) {
+            return getPersonalTimer(uuid)!!
+        }
+        else {
+            return addPersonalTimer(uuid, timer.deserialize())
+        }
     }
 
     /**
-     * Gets a personal [Timer] from a Players UUID
+     * Creates a new Personal timer for a Player
      *
-     * If the Timer does not exists, one will be created.
+     * The UUID of the timer must be set to the Players UUID!
      *
      * @param uuid The Players UUID
-     * @return His Personal Timer
+     * @param timer the timer to add to the player
      */
-    fun getPersonalTimer(uuid: UUID): Timer = getPersonalTimer(uuid.toString())
-
+    fun addPersonalTimer(uuid: UUID, timer: Timer = newTimer(defaultDesign, playerUUID = uuid)): Timer {
+        timers += uuid to timer
+        return getPersonalTimer(uuid)!!
+    }
 
     /**
      * Writes all timers to disk
@@ -88,14 +123,13 @@ object TimerManager {
      * Shutdowns all timers and writes them to disk
      */
     fun shutdownTimers() {
-        timers.forEach {t, u ->
+        timers.forEach {_, u ->
             u.state = TimerState.STOPPED
         }
         saveTimers()
     }
 
     init {
-
         // Create needed folders
         fileStructure()
 
@@ -107,11 +141,17 @@ object TimerManager {
 
     }
 
+    /**
+     * creates the file structure needed for designs and timers
+     */
     private fun fileStructure() {
         File(mxtimer.dataFolder.path + "/designs").mkdirs()
         File(mxtimer.dataFolder.path + "/timers").mkdirs()
     }
 
+    /**
+     * Loads all designs from disk
+     */
     fun loadDesigns() {
         info(cmp("Loading Timer Designs..."))
         designs = mutableMapOf()
@@ -135,7 +175,10 @@ object TimerManager {
 
         for (defaultdesign in defaultdesigns) {
             mxtimer.saveResource("designs/$defaultdesign.json", true)
-            if (!designs.containsKey(defaultdesign)) {
+
+            if (defaultdesign == "default")
+                defaultDesign = Json.decodeFromString(TimerDesign.serializer(), File(mxtimer.dataFolder.path + "/designs/$defaultdesign.json").readText())
+            else if (!designs.containsKey(defaultdesign)) {
                 designs += defaultdesign to Json.decodeFromString(TimerDesign.serializer(), File(mxtimer.dataFolder.path + "/designs/$defaultdesign.json").readText())
             } else {
                 designs[defaultdesign] = Json.decodeFromString(TimerDesign.serializer(), File(mxtimer.dataFolder.path + "/designs/$defaultdesign.json").readText())
@@ -143,6 +186,9 @@ object TimerManager {
         }
     }
 
+    /**
+     * Loads all timers from disk
+     */
     private fun loadTimers() {
         info(cmp("Loading Timers..."))
         timers = mutableMapOf()
@@ -158,49 +204,57 @@ object TimerManager {
                 // If personal timers are deactivated, do not start the timer tasks as they are not needed
                 // And would just use resources
                 // And if an Admin changes their mind and activates personal timers again, they will start when the players use /ptimer resume
+
                 timer.activate = if (ConfigManager.config.personalTimers) timer.activate else false
 
-                timers += file.nameWithoutExtension to timer.deserialize()
+                if (file.nameWithoutExtension == "global-timer")
+                    globalTimer = timer.deserialize()
+                else
+                    timers += UUID.fromString(file.nameWithoutExtension) to timer.deserialize()
             }
         }
 
         // Create Global Timer if not present
 
-        if (!timers.containsKey("global-timer")) {
+        if (!this::globalTimer.isInitialized) {
             debug(cmp("Global Timer not found, creating..."))
-            timers += "global-timer" to newTimer(global = true)
+            globalTimer =  newTimer(global = true)
         }
 
         info(cmp("Timers Loaded!"))
     }
 
     /**
-     * Creates a New [Timer], set up to be the global timer
+     * Creates a New [Timer]
+     * @param design The design
+     * @param global whether this is the global timer or not
+     * @param playerUUID The UUID of the target player, leave blank if global
+     * @param direction The direction
+     * @param time The Time of the timer
+     * @param activate Whether to directly activate
+     * @param visible if its visible
+     * @param settings Additional Settings
      */
     fun newTimer(
-        design: TimerDesign = templateDesign(),
-        global: Boolean,
-        playerUUID: String = UUID.randomUUID().toString()
+        design: TimerDesign = defaultDesign,
+        global: Boolean = false,
+        playerUUID: UUID = UUID.randomUUID(),
+        direction: TimerDirection = TimerDirection.COUNTUP,
+        time: Duration = Duration.ZERO,
+        activate: Boolean = true,
+        visible: Boolean = true,
+        settings: TimerSettings = TimerSettings(true, true)
     ): Timer {
         return Timer (
             design = design,
-            activate = true,
-            time = Duration.ZERO,
+            activate = activate,
+            time = time,
             playerUUID = if (global) null else playerUUID,
-            direction = TimerDirection.COUNTUP,
-            visible = true,
-            settings = TimerSettings(
-                true,
-                true
-            )
+            direction = direction,
+            visible = visible,
+            settings = settings
         )
     }
-
-    /**
-     * A default [TimerDesign] for a [Timer]
-     */
-    fun templateDesign(): TimerDesign = getDesign("default")
 }
 
 val globalTimer by lazy { TimerManager.globalTimer }
-val timers by lazy { TimerManager.timers }

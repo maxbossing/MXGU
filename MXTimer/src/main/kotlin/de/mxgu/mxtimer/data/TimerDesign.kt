@@ -1,6 +1,5 @@
 package de.mxgu.mxtimer.data
 
-import de.mxgu.mxtimer.timer.DisplaySlot
 import de.mxgu.mxtimer.timer.TimerManager
 import kotlinx.serialization.Serializable
 import java.util.*
@@ -38,7 +37,19 @@ data class TimeDesign (
     var alwaysVisible: Boolean
 )
 
-val TimerDesign.id: String?
-    get() {
-        return TimerManager.getDesignUUID(this)
-    }
+/**
+ * Where an [AbstractTimer] is displayed
+ */
+enum class DisplaySlot {
+    /**
+     * In the Hotbar of players
+     */
+    HOTBAR,
+
+    /**
+     * In the Bossbar and the top of the screen
+     */
+    BOSSBAR
+}
+
+fun TimerDesign.id(): String = TimerManager.getUUID(this)

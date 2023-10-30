@@ -9,7 +9,7 @@ import kotlinx.serialization.json.decodeFromStream
 import java.io.File
 
 @Serializable
-data class Config( var personalTimers: Boolean)
+data class Config(var personalTimers: Boolean)
 
 
 object ConfigManager {
